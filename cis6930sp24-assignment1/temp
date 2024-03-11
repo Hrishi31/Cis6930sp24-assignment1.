@@ -1,0 +1,85 @@
+import argparse
+import glob
+import os
+import re
+
+
+
+json_key_path = 'C:\Users\91961\OneDrive\Desktop\UFLCourses\Sem 4\DE\cis6930sp24-assignment1\still-smithy-358409-a22b404e9126.json'
+# Set the GOOGLE_APPLICATION_CREDENTIALS environment variable
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = json_key_path
+
+
+from google.cloud import language_v2
+
+
+from google.cloud import language_v2
+
+def get_names(text_content):
+    """
+    Analyzes Entities in a string to identify names of persons.
+
+    Args:
+      text_content: The text content to analyze
+
+    Returns:
+      A list of names identified in the text.
+    """
+    client = language_v2.LanguageServiceClient()
+
+    # Define the type of document
+    document_type_in_plain_text = language_v2.Document.Type.PLAIN_TEXT
+
+    # Define the language and the document
+    language_code = "en"
+    document = {
+        "content": text_content,
+        "type_": document_type_in_plain_text,
+        "language": language_code,
+    }
+
+    # Specify the text encoding
+    encoding_type = language_v2.EncodingType.UTF8
+
+    # Perform entity analysis
+    response = client.analyze_entities(request={"document": document, "encoding_type": encoding_type})
+
+    # List to store names of persons
+    person_names = []
+
+    # Process each entity in the response
+    for entity in response.entities:
+        # Check if the entity type is PERSON
+        if language_v2.Entity.Type(entity.type_) == language_v2.Entity.Type.PERSON:
+            person_names.append(entity.name)
+
+    return person_names
+
+
+def censor_names_in_text(text):
+    """
+    Censors the specified names in the given text with asterisks.
+
+    Args:
+    text (str): The text to censor.
+    names (list of str): Names to censor in the text.
+
+    Returns:
+    str: The censored text.
+    """
+    # Sort names by length in descending order to match longer names first
+    names = censor_names(text)
+    names_sorted = sorted(names, key=len, reverse=True)
+    
+    # Escape names to safely include them in regex and prepare regex pattern
+    pattern = '|'.join(re.escape(name) for name in names_sorted)
+    
+    # Function to replace each match with the appropriate number of asterisks
+    def replace_with_asterisks(match):
+        return '*' * len(match.group())
+    
+    # Censor names in the text
+    censored_text = re.sub(pattern, replace_with_asterisks, text)
+    
+    return censored_text
+

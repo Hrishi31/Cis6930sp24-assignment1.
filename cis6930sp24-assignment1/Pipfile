@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+google-cloud-language = "*"
+pytest = "*"
+charset-normalizer = "*"
+chardet = "*"
+pytest-mock = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
