@@ -65,3 +65,7 @@ pipenv run python censor.py --input "path/to/input/files/*.txt" --names --dates 
 - **Bugs**: Cannot censor information that Google NLP can't detect.
 - **Assumptions**: Assumes consistent text formatting within input documents and accurate detection by the Google Cloud Natural Language API. Variations in text formatting or API inaccuracies may affect censoring accuracy. 
 
+### Collaborators
+
+- **cloud.google.com**: Used as reference for documentation
+- **Roommates Mohit Kukreja and Mayur Reddy**: Helped me understand some issues with pytest cases
